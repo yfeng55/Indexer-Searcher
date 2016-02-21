@@ -77,9 +77,12 @@ public class Searcher {
 
         // PRINT OUTPUT (SEARCH RESULTS) //
 
+        //output to HTML file
+        File htmlResultsPage = new File("./results.html");
+
         System.out.println("\nFound " + hits.totalHits + " document(s) (in " + (end - start) + " milliseconds) that matched query '" + q + "':\n");
 
-        String directoryname = indexDir;
+        String directoryname = htmlResultsPage.getParent();
         System.out.println("Results for query '" + q + "' in directory '" + directoryname + "' \n");
 
 
@@ -104,8 +107,7 @@ public class Searcher {
         htmlString += "</body></html>";
 
 
-        //output to HTML file
-        File htmlResultsPage = new File("./results.html");
+        
         FileUtils.writeStringToFile(htmlResultsPage, htmlString);
 
         //close the indexreader
