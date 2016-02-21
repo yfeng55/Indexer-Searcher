@@ -25,6 +25,8 @@ import java.text.ParseException;
 public class Searcher {
 
 
+    private static String directoryname = "";
+
     public static void main(String[] args) throws IllegalArgumentException, IOException, ParseException, org.apache.lucene.queryparser.classic.ParseException {
 
         if (args.length != 4) {
@@ -77,19 +79,13 @@ public class Searcher {
 
         // PRINT OUTPUT (SEARCH RESULTS) //
 
-        //output to HTML file
-        File htmlResultsPage = new File("./results.html");
-
         System.out.println("\nFound " + hits.totalHits + " document(s) (in " + (end - start) + " milliseconds) that matched query '" + q + "':\n");
 
-        String directoryname = htmlResultsPage.getParent();
         System.out.println("Results for query '" + q + "' in directory '" + directoryname + "' \n");
 
 
-        String htmlString = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">";
-        htmlString += "<title>" + "Results for query '" + q + "' in directory '" + directoryname + "</title></head><body>";
+        String htmlString = "";
 
-        htmlString += "<h1>Results for query <u>" + q + "</u> in directory <u>" + directoryname + "</u> </h1>";
 
         int i = 1;
         for(ScoreDoc scoreDoc : hits.scoreDocs) {
@@ -97,6 +93,22 @@ public class Searcher {
 
             System.out.println(Integer.toString(i) + ". " + doc.get("title"));
             System.out.println("\t" + doc.get("fullpath") + "\n");
+
+            
+            //set directoryname
+            if(directoryname.equals("")){
+                String fullpath = doc.get("fullpath");
+
+                int lastindex = fullpath.lastIndexOf("/");
+
+                String shortened_fullpath = fullpath.substring(0, lastindex);
+
+                int secondlastindex = shortened_fullpath.lastIndexOf("/");
+                directoryname = fullpath.substring(secondlastindex+1, lastindex);
+
+                // System.out.println("DIRECTORY NAME: " + directoryname);
+            }
+
 
             htmlString += "<p><b><i>" + Integer.toString(i) + "</i>. " + doc.get("title") + "</b><br/> " +
                     "<span style='margin-left:3em'>" + doc.get("fullpath") + "</span></p>";
@@ -107,7 +119,15 @@ public class Searcher {
         htmlString += "</body></html>";
 
 
+        // PREPEND TITLE
+        htmlString = "<title>" + "Results for query '" + q + "' in directory '" + directoryname + "</title></head><body>" + htmlString;
+        htmlString = "<h1>Results for query <u>" + q + "</u> in directory <u>" + directoryname + "</u> </h1>" + htmlString;
+        htmlString = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">" + htmlString;
         
+
+
+        //output to HTML file
+        File htmlResultsPage = new File("./results.html");
         FileUtils.writeStringToFile(htmlResultsPage, htmlString);
 
         //close the indexreader
