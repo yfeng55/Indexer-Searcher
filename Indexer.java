@@ -10,7 +10,6 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
 
-
 public class Indexer {
 
 
@@ -21,8 +20,8 @@ public class Indexer {
        }
 
 
-       String indexpath;
-       String datapath;
+       String indexpath = "";
+       String datapath = "";
 
        for(int i=0; i<args.length; i+=2){
            switch(args[i]){

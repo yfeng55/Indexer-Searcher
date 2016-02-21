@@ -27,15 +27,29 @@ public class Searcher {
 
     public static void main(String[] args) throws IllegalArgumentException, IOException, ParseException, org.apache.lucene.queryparser.classic.ParseException {
 
-        if (args.length != 2) {
-            throw new IllegalArgumentException("Usage: java " + Searcher.class.getName() + " <index dir> <query>");
+        if (args.length != 4) {
+            throw new IllegalArgumentException("Must provide arguments: " + "-index <index dir> -q <query>");
         }
 
-        //the location of the index
-        String indexDir = args[0];
 
-        //the query to search for
-        String query = args[1];
+       String indexDir = "";
+       String query = "";
+
+
+       for(int i=0; i<args.length; i+=2){
+           switch(args[i]){
+                case "-index":
+                    indexDir = args[i+1];
+                    break;
+                case "-q":
+                    query = args[i+1];
+                    break;
+                default:
+                    throw new IllegalArgumentException("Must provide arguments: " + "-index <index dir> -q <query>");
+           }
+       }
+
+
 
         search(indexDir, query);
     }
